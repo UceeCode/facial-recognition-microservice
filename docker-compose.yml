@@ -9,16 +9,19 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=production
-      - PORT=3000
-      - SIMILARITY_THRESHOLD=0.6
-      - LOG_LEVEL=info
+      NODE_ENV: production
+      PORT: 3000
+      SIMILARITY_THRESHOLD: 0.6
+      MIN_FACE_SIZE: 80
+      MIN_BRIGHTNESS: 30
+      MAX_BRIGHTNESS: 230
+      MIN_SHARPNESS: 50
+      LOG_LEVEL: info
     volumes:
-      - ./models:/app/models
+      - ./models:/app/models:ro
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
