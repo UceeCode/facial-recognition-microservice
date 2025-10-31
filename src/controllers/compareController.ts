@@ -31,4 +31,4 @@ export const compareController = async (
     } catch (error) {
         next(error);
     }
- };
+};
