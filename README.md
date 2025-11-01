@@ -269,4 +269,4 @@ npm run format
 
 ## Author
 
-[Nkwocha Franklin]
+Nkwocha Franklin
