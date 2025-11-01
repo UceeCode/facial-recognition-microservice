@@ -7,7 +7,6 @@ export class FaceComparator {
             throw new Error('Encodings must have the same length');
         }
     
-        // Calculate Euclidean distance (standard for face-api.js)
         let sumSquaredDiff = 0;
         for (let i = 0; i < encoding1.length; i++) {
             const diff = encoding1[i] - encoding2[i];
@@ -16,11 +15,7 @@ export class FaceComparator {
         
         const distance = Math.sqrt(sumSquaredDiff);
         
-        // Convert distance to similarity (0-1 scale)
-        // Lower distance = higher similarity
-        // Typical face-api.js distance threshold is 0.6
-        // We normalize so that distance 0 = similarity 1, distance 1 = similarity 0
-        const similarity = Math.max(0, 1 - distance);
+        const similarity = Math.exp(-distance);
         
         logger.debug('Face similarity calculation', {
             distance,
@@ -50,9 +45,8 @@ export class FaceComparator {
         return {
             similarity: parseFloat(similarity.toFixed(4)),
             isSamePerson,
-            // Include distance for debugging
             _debug: {
-                calculationMethod: 'euclidean_distance'
+                calculationMethod: 'exponential_decay'
             }
         };
     }
