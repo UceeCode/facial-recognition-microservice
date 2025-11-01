@@ -1,4 +1,4 @@
-import * as faceapi from '@vladmandic/face-api';
+import * as faceapi from 'face-api.js';
 
 export interface FaceDetectionResult {
     detection: faceapi.FaceDetection;

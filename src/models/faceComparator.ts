@@ -1,33 +1,40 @@
 import { config } from '../config/config';
 import { logger } from '../utils/logger';
 
-
 export class FaceComparator {
     static calculateSimilarity(encoding1: Float32Array, encoding2: Float32Array): number {
         if (encoding1.length !== encoding2.length) {
             throw new Error('Encodings must have the same length');
         }
     
-        let dotProduct = 0;
-        let norm1 = 0;
-        let norm2 = 0;
-    
+        // Calculate Euclidean distance (standard for face-api.js)
+        let sumSquaredDiff = 0;
         for (let i = 0; i < encoding1.length; i++) {
-          dotProduct += encoding1[i] * encoding2[i];
-          norm1 += encoding1[i] * encoding1[i];
-          norm2 += encoding2[i] * encoding2[i];
+            const diff = encoding1[i] - encoding2[i];
+            sumSquaredDiff += diff * diff;
         }
-    
-        const similarity = dotProduct / (Math.sqrt(norm1) * Math.sqrt(norm2));
         
-        return Math.max(0, Math.min(1, similarity));
+        const distance = Math.sqrt(sumSquaredDiff);
+        
+        // Convert distance to similarity (0-1 scale)
+        // Lower distance = higher similarity
+        // Typical face-api.js distance threshold is 0.6
+        // We normalize so that distance 0 = similarity 1, distance 1 = similarity 0
+        const similarity = Math.max(0, 1 - distance);
+        
+        logger.debug('Face similarity calculation', {
+            distance,
+            similarity,
+            threshold: config.similarityThreshold
+        });
+        
+        return similarity;
     }
-
 
     static isSamePerson(similarity: number): boolean {
         const isSame = similarity >= config.similarityThreshold;
         
-        logger.debug('Face comparison', {
+        logger.debug('Face comparison result', {
             similarity,
             threshold: config.similarityThreshold,
             isSamePerson: isSame,
@@ -43,6 +50,10 @@ export class FaceComparator {
         return {
             similarity: parseFloat(similarity.toFixed(4)),
             isSamePerson,
+            // Include distance for debugging
+            _debug: {
+                calculationMethod: 'euclidean_distance'
+            }
         };
     }
 }

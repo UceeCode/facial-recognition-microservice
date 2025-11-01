@@ -1,18 +1,21 @@
-import * as faceapi from '@vladmandic/face-api';
+import * as faceapi from 'face-api.js';
 import { loadImage, Canvas, Image } from 'canvas';
 import { config } from '../config/config';
 import { logger } from '../utils/logger';
 import { ValidationError } from '../utils/errors';
 
 
-faceapi.env.monkeyPatch({ Canvas, Image });
+faceapi.env.setEnv(faceapi.env.createNodejsEnv());
 
+faceapi.env.initialize();
+
+// Monkey patch for canvas
+(faceapi.env as any).monkeyPatch({ Canvas, Image });
 
 export class FaceDetector {
     private static isInitialized = false;
 
     static async initialize(): Promise<void> {
-
         if (this.isInitialized) {
             logger.info('Face detector already initialized');
             return;
@@ -20,20 +23,33 @@ export class FaceDetector {
     
         try {
             logger.info('Loading face detection models...');
-                
+            logger.info(`Model path: ${config.modelPath}`);
+            
+            // Load models one by one with logging
+            logger.info('Loading SSD MobileNet V1...');
             await faceapi.nets.ssdMobilenetv1.loadFromDisk(config.modelPath);
+            logger.info('SSD MobileNet V1 loaded successfully');
+            
+            logger.info('Loading Face Landmark 68...');
             await faceapi.nets.faceLandmark68Net.loadFromDisk(config.modelPath);
+            logger.info('Face Landmark 68 loaded successfully');
+            
+            logger.info('Loading Face Recognition Net...');
             await faceapi.nets.faceRecognitionNet.loadFromDisk(config.modelPath);
+            logger.info('Face Recognition Net loaded successfully');
         
             this.isInitialized = true;
             logger.info('Face detection models loaded successfully');
         } catch (error) {
-            logger.error('Failed to load face detection models', { error });
-            throw new Error('Failed to initialize face detection models');
+            logger.error('Failed to load face detection models', { 
+                error,
+                errorMessage: error instanceof Error ? error.message : String(error),
+                errorStack: error instanceof Error ? error.stack : undefined
+            });
+            throw error;
         }
     }
     
-
     static async detectAndEncode(imageBuffer: Buffer) {
         if (!this.isInitialized) {
             throw new Error('Face detector not initialized');
@@ -54,7 +70,7 @@ export class FaceDetector {
             let selectedDetection = detections[0];
             if (detections.length > 1) {
                 logger.warn(`Multiple faces detected (${detections.length}), selecting largest`);
-                    selectedDetection = detections.reduce((largest, current) =>
+                selectedDetection = detections.reduce((largest, current) =>
                     current.detection.box.area > largest.detection.box.area ? current : largest
                 );
             }

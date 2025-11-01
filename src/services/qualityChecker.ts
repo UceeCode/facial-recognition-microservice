@@ -6,7 +6,7 @@ import { logger } from '../utils/logger';
 
 export class QualityChecker {
     private static async calculateBrightness(buffer: Buffer): Promise<number> {
-        const { data, info } = await sharp(buffer)
+        const { data } = await sharp(buffer)
             .greyscale()
             .raw()
             .toBuffer({ resolveWithObject: true });
