@@ -1,14 +1,17 @@
-FROM node:18-alpine AS builder
+# Builder stage
+FROM node:18 AS builder
 
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y \
     python3 \
     make \
     g++ \
-    cairo-dev \
-    jpeg-dev \
-    pango-dev \
-    giflib-dev \
-    pixman-dev
+    libcairo2-dev \
+    libjpeg-dev \
+    libpango1.0-dev \
+    libgif-dev \
+    libpixman-1-dev \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -22,14 +25,17 @@ COPY src ./src
 RUN npm run build
 
 # Production stage
-FROM node:18-alpine
+FROM node:18-slim
 
-RUN apk add --no-cache \
-    cairo \
-    jpeg \
-    pango \
-    giflib \
-    pixman
+RUN apt-get update && apt-get install -y \
+    libcairo2 \
+    libjpeg62-turbo \
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    libgif7 \
+    libpixman-1-0 \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -37,7 +43,7 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package.json ./
 
-RUN mkdir -p /app/models
+COPY models /app/models
 
 EXPOSE 3000
 
