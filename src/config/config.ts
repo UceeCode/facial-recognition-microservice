@@ -9,11 +9,13 @@ export const config = {
     
     modelPath: process.env.MODEL_PATH || path.resolve(__dirname, '../../models'),
     
-    similarityThreshold: parseFloat(process.env.SIMILARITY_THRESHOLD || '0.6'),
-    minFaceSize: parseInt(process.env.MIN_FACE_SIZE || '80', 10),
-    minBrightness: parseFloat(process.env.MIN_BRIGHTNESS || '30'),
-    maxBrightness: parseFloat(process.env.MAX_BRIGHTNESS || '230'),
-    minSharpness: parseFloat(process.env.MIN_SHARPNESS || '50'),
+    similarityThreshold: parseFloat(process.env.SIMILARITY_THRESHOLD || '0.58'),
+    minFaceSize: parseInt(process.env.MIN_FACE_SIZE || '70', 10),
+    minBrightness: parseFloat(process.env.MIN_BRIGHTNESS || '25'),
+    maxBrightness: parseFloat(process.env.MAX_BRIGHTNESS || '235'),
+    minSharpness: parseFloat(process.env.MIN_SHARPNESS || '40'),
+
+    minConfidence: parseFloat(process.env.MIN_CONFIDENCE || '0.4'), 
     
     maxFileSize: 10 * 1024 * 1024,
     allowedMimeTypes: ['image/jpeg', 'image/png', 'image/jpg'],

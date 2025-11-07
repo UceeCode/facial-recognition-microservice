@@ -15,7 +15,7 @@ export class FaceComparator {
         
         const distance = Math.sqrt(sumSquaredDiff);
         
-        const similarity = Math.exp(-distance);
+        const similarity = Math.exp(-distance * 0.95);
         
         logger.debug('Face similarity calculation', {
             distance,
@@ -46,7 +46,8 @@ export class FaceComparator {
             similarity: parseFloat(similarity.toFixed(4)),
             isSamePerson,
             _debug: {
-                calculationMethod: 'exponential_decay'
+                calculationMethod: 'exponential_decay',
+                adjustmentFactor: 0.95
             }
         };
     }

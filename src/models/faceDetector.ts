@@ -9,7 +9,6 @@ faceapi.env.setEnv(faceapi.env.createNodejsEnv());
 
 faceapi.env.initialize();
 
-// Monkey patch for canvas
 (faceapi.env as any).monkeyPatch({ Canvas, Image });
 
 export class FaceDetector {
@@ -25,7 +24,6 @@ export class FaceDetector {
             logger.info('Loading face detection models...');
             logger.info(`Model path: ${config.modelPath}`);
             
-            // Load models one by one with logging
             logger.info('Loading SSD MobileNet V1...');
             await faceapi.nets.ssdMobilenetv1.loadFromDisk(config.modelPath);
             logger.info('SSD MobileNet V1 loaded successfully');
@@ -59,7 +57,9 @@ export class FaceDetector {
             const img = await loadImage(imageBuffer);
 
             const detections = await faceapi
-                .detectAllFaces(img as any, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.5 }))
+                .detectAllFaces(img as any, new faceapi.SsdMobilenetv1Options({ 
+                    minConfidence: config.minConfidence 
+                }))
                 .withFaceLandmarks()
                 .withFaceDescriptors();
 
