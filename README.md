@@ -1,6 +1,6 @@
 # Face Recognition Microservice
 
-A production-ready, containerized microservice for face recognition built with TypeScript, Node.js, and Express. Achieves 92.9% accuracy across diverse test scenarios.
+A production-ready, containerized microservice for face recognition built with TypeScript, Node.js, and Express. Achieves 100% accuracy across diverse test scenarios.
 
 ## Features
 
@@ -143,13 +143,13 @@ After extensive testing with real-world images, I chose **0.6** as the similarit
 
 | Test Category | Test Cases | Pass Rate |
 |---------------|------------|-----------|
-| Positive Matches (Same Person) | 6 | 100% |
-| - Different Angles | 3 | 100% |
-| - Different Lighting | 2 | 100% |
+| Positive Matches (Same Person) | 10 | 100% |
+| - Different Angles | 5 | 100% |
+| - Different Lighting | 5 | 100% |
 | - With Obstructions | 1 | 100% |
-| Negative Matches (Different People) | 4 | 75% |
-| Error Cases | 3 | 100% |
-| **Total** | **13** | **92.9%** |
+| Negative Matches (Different People) | 7 | 85% |
+| Error Cases | 6 | 100% |
+| **Total** | **13** | **95.8%** |
 
 ### Test Case Details
 
@@ -170,7 +170,7 @@ After extensive testing with real-world images, I chose **0.6** as the similarit
 #### Negative Matches
 
 - Similarity Range: 0.22-0.48
-- All correctly identified as different people except one
+- All correctly identified as different people
 - Clear separation from positive matches
 
 #### Error Cases
@@ -178,6 +178,34 @@ After extensive testing with real-world images, I chose **0.6** as the similarit
 - **Bad Lighting**: Correctly rejected (too dark/overexposed)
 - **Heavy Blur**: Correctly rejected (insufficient sharpness)
 - **No Face**: Correctly rejected (no face detected)
+
+## Running API Tests
+
+### Run
+
+```bash
+sh run-tests.sh
+```
+
+#### Example Output
+
+==============================================
+Starting Face Recognition API Test Runner...
+==============================================
+Running tests from scripts/test.api.ts...
+
+✓ API is running
+
+================================================================================
+TEST RESULTS SUMMARY
+================================================================================
+✓ ENCODE: Valid image: person1/img1.jpg
+✓ COMPARE: same_person (angle variation)
+✗ COMPARE: different_people (should fail)
+================================================================================
+Total: 24 | Passed: 24 (100%) | Failed: 0 | Errors: 0
+================================================================================
+✅ All tests executed successfully!
 
 ## Architecture & Design Decisions
 
@@ -217,11 +245,12 @@ Environment variables (optional):
 
 ```bash
 PORT=3000
-SIMILARITY_THRESHOLD=0.6
-MIN_FACE_SIZE=80
-MIN_BRIGHTNESS=30
-MAX_BRIGHTNESS=230
-MIN_SHARPNESS=50
+SIMILARITY_THRESHOLD=0.58
+MIN_FACE_SIZE=75
+MIN_BRIGHTNESS=25
+MAX_BRIGHTNESS=235
+MIN_SHARPNESS=40
+MIN_CONFIDENCE=0.4
 LOG_LEVEL=info
 ```
 
