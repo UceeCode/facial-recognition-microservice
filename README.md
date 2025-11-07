@@ -187,26 +187,6 @@ After extensive testing with real-world images, I chose **0.6** as the similarit
 sh run-tests.sh
 ```
 
-#### Example Output
-
-==============================================
-Starting Face Recognition API Test Runner...
-==============================================
-Running tests from scripts/test.api.ts...
-
-✓ API is running
-
-================================================================================
-TEST RESULTS SUMMARY
-================================================================================
-✓ ENCODE: Valid image: person1/img1.jpg
-✓ COMPARE: same_person (angle variation)
-✗ COMPARE: different_people (should fail)
-================================================================================
-Total: 24 | Passed: 24 (100%) | Failed: 0 | Errors: 0
-================================================================================
-✅ All tests executed successfully!
-
 ## Architecture & Design Decisions
 
 ### Separation of Concerns
