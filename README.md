@@ -147,9 +147,9 @@ After extensive testing with real-world images, I chose **0.6** as the similarit
 | - Different Angles | 5 | 100% |
 | - Different Lighting | 5 | 100% |
 | - With Obstructions | 1 | 100% |
-| Negative Matches (Different People) | 7 | 85% |
+| Negative Matches (Different People) | 7 | 100% |
 | Error Cases | 6 | 100% |
-| **Total** | **13** | **95.8%** |
+| **Total** | **24** | **100%** |
 
 ### Test Case Details
 
